@@ -30,7 +30,6 @@ DETOUR_DECLARE_MEMBER_A4(CServerRemoteAccess_WriteDataRequest, void, CRConServer
 		// parse out the buffer
 		auto requestID = cmd.GetInt();
 		auto requestType = cmd.GetInt();
-		// printf("[gmsv_rcon2] Request from listener '%d' (reqId:n %d), type: %d\n", listener, requestID, requestType);
 
 		auto state = s_LuaState;
 		auto isNil = true;

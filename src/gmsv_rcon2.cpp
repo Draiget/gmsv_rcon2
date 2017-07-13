@@ -10,7 +10,6 @@ GMOD_MODULE_OPEN() {
 	ConVar_Register();
 
 	auto tierLib = VStdLib_GetICVarFactory();
-	printf("[gmsv_rcon2] Linking tier libs ...\n");
 	ConnectTier1Libraries(&tierLib, 1);
 	ConnectTier2Libraries(&tierLib, 1);
 	ConnectTier3Libraries(&tierLib, 1);
