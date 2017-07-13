@@ -22,8 +22,6 @@ RconRestictedCmds = {
 	"lua_run"
 }
 
-RconAuthList = {}
-
 hook.Add("OnRconCheckPassword", "RCON_IsPassword", function( password, listenerId, isLan, ip, port )
 	-- Any error in rcon hooks will cause "Lua Panic" error and server crash
 	-- This is simple try\catch style call
