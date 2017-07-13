@@ -51,7 +51,7 @@ hook.Add("OnRconCheckPassword", "RCON_IsPassword", function( password, listenerI
 	end )
 
 	if ( !state ) then
-		Error( msgOrArgs )
+		print( msgOrArgs )
 		return false
 	end
 
@@ -95,7 +95,7 @@ hook.Add("OnRconWriteRequest", "RCON_WriteRequest", function( listenerId, reques
 	end )
 
 	if ( !state ) then
-		Error( msgOrArgs )
+		print( msgOrArgs )
 		return false
 	end
 
