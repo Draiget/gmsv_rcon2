@@ -11,7 +11,7 @@ require("rcon2")
 	SERVERDATA_REMOVE_VPROF = 5 // unsubscribe from a vprof stream
 	SERVERDATA_TAKE_SCREENSHOT = 6
 	SERVERDATA_SEND_CONSOLE_LOG = 7
-]]
+--]]
 
 RconAllowList = {
 	["192.168.137.5"] = "CoolPasswdInLocalArea",
@@ -51,7 +51,7 @@ hook.Add("OnRconCheckPassword", "RCON_IsPassword", function( password, listenerI
 	end )
 
 	if ( !state ) then
-		Error( msgOrArgs )
+		print( msgOrArgs )
 		return false
 	end
 
@@ -95,7 +95,28 @@ hook.Add("OnRconWriteRequest", "RCON_WriteRequest", function( listenerId, reques
 	end )
 
 	if ( !state ) then
-		Error( msgOrArgs )
+		print( msgOrArgs )
+		return false
+	end
+
+	return msgOrArgs
+end)
+
+hook.Add("OnRconLogCommand", "RCON_LogCommand", function( listenerId, msg, isKnownListener, isLan, ip, port )
+	-- Any error in rcon hooks will cause "Lua Panic" error and server crash
+	-- This is simple try\catch style call
+	local state, msgOrArgs = pcall( function()
+		if ( isKnownListener ) then
+			ServerLog(Format("[RCON] Rcon from [%s:%d]: %s\n", ip, port, msg))
+			return
+		end
+
+		-- Unknown listener, let engine handle default LogCommand
+		return false
+	end )
+
+	if ( !state ) then
+		print( msgOrArgs )
 		return false
 	end
 
