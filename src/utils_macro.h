@@ -18,6 +18,20 @@
 		ret (name##Class::* name##Class::name##_Actual)(arg1type) = nullptr;\
 		ret name##Class::DETOUR_##name(arg1type arg1name)
 
+#define DETOUR_DECLARE_A2( name, ret, arg1type, arg1name, arg2type, arg2name) \
+		class name##Class {\
+		public:\
+			ret DETOUR_##name(arg1type arg1name, arg2type arg2name);\
+			static ret (name##Class::* name##_Actual)(arg1type, arg2type);\
+		};\
+		extern CDetourContext *g_pDETOUR_##name;\
+		extern ret (*name##_Actual)(arg1type, arg2type)
+
+#define DETOUR_DECLARE_MEMBER_A2(name, ret, arg1type, arg1name, arg2type, arg2name) \
+		CDetourContext *g_pDETOUR_##name = nullptr;\
+		ret (name##Class::* name##Class::name##_Actual)(arg1type, arg2type) = nullptr;\
+		ret name##Class::DETOUR_##name(arg1type arg1name, arg2type arg2name)
+
 #define DETOUR_DECLARE_A4( name, ret, arg1type, arg1name, arg2type, arg2name, arg3type, arg3name, arg4type, arg4name) \
 		class name##Class {\
 		public:\
