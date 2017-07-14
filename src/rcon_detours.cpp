@@ -6,7 +6,6 @@
 #include "shared.h"
 #include <Lua/Interface.h>
 #include "detours_context.h"
-#include "utils_sigscan.h"
 
 using namespace GarrysMod::Lua;
 using namespace std;
@@ -17,7 +16,6 @@ static unsigned long* s_mListenerIDs = nullptr;
 DETOUR_DECLARE_A4( CServerRemoteAccess_CheckPassword, void, CRConServer*, pServerRA, ra_listener_id, listener, int, requestId, const char*, password);
 DETOUR_DECLARE_A4( CServerRemoteAccess_WriteDataRequest, void, CRConServer*, pServerRA, ra_listener_id, listener, const void*, buffer, int, bufferSize);
 DETOUR_DECLARE_A1( CServerRemoteAccess_IsPassword, bool, const char*, pPassword);
-// DETOUR_DECLARE_A2( CServerRemoteAccess_LookupValue, bool, const char*, variable, CUtlBuffer&, value);
 DETOUR_DECLARE_A2( CServerRemoteAccess_LogCommand, void, ra_listener_id, listener, const char*, msg);
 
 DETOUR_DECLARE_MEMBER_A4(CServerRemoteAccess_WriteDataRequest, void, CRConServer*, pServerRA, ra_listener_id, listener, const void*, buffer, int, bufferSize) {
@@ -118,12 +116,6 @@ DETOUR_DECLARE_MEMBER_A1(CServerRemoteAccess_IsPassword, bool, const char*, pPas
 	return DETOUR_MEMBER_CALL(CServerRemoteAccess_IsPassword)(pPassword);
 }
 
-/*DETOUR_DECLARE_MEMBER_A2( CServerRemoteAccess_LookupValue, bool, const char*, variable, CUtlBuffer&, value) {
-	Assert(value.IsText());
-
-	return DETOUR_MEMBER_CALL(CServerRemoteAccess_LookupValue)(variable, value);
-}*/
-
 DETOUR_DECLARE_MEMBER_A2( CServerRemoteAccess_LogCommand, void, ra_listener_id, listener, const char*, msg) {
 	auto server = reinterpret_cast<CServerRemoteAccess *>(this);
 	auto m_ListenerIDs = reinterpret_cast<CUtlLinkedList<ListenerStore_t, int>*>(reinterpret_cast<unsigned char*>(server) + 0x2C);
@@ -200,13 +192,6 @@ bool DetourRconInit(lua_State* state) {
 			"engine.dll"
 	);
 
-	/*DETOUR_CREATE_MEMBER(
-		CServerRemoteAccess_LookupValue,
-			"CServerRemoteAccess::LookupValue",
-			SIG_CSERVERREMOTEACCESS_LOOKUPVALUE,
-			"engine.dll"
-	);*/
-
 	DETOUR_CREATE_MEMBER(
 		CServerRemoteAccess_LogCommand,
 			"CServerRemoteAccess::LogCommand",
@@ -222,7 +207,6 @@ bool DetourRconShutdown() {
 	DETOUR_DESTROY(CServerRemoteAccess_WriteDataRequest);
 	DETOUR_DESTROY(CServerRemoteAccess_CheckPassword);
 	DETOUR_DESTROY(CServerRemoteAccess_IsPassword);
-	// DETOUR_DESTROY(CServerRemoteAccess_LookupValue);
 	DETOUR_DESTROY(CServerRemoteAccess_LogCommand);
 	return true;
 }
