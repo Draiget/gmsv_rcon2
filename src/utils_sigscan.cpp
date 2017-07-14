@@ -3,8 +3,7 @@
 #include <cstring>
 #include "utils_memory.h"
 
-unsigned int UTIL_StringToSignature2(const char *str, char buffer[], size_t maxlength)
-{
+unsigned int UTIL_StringToSignature(const char *str, char buffer[], size_t maxlength) {
 	unsigned int real_bytes = 0;
 	auto length = strlen(str);
 
@@ -39,12 +38,12 @@ unsigned int UTIL_StringToSignature2(const char *str, char buffer[], size_t maxl
 }
 
 void* UTIL_RuntimeSigScan(const char* pSignature, const char* pLibName) {
-	if (!pSignature || pSignature[0] == 0){
+	if (!pSignature || pSignature[0] == 0) {
 		return nullptr;
 	}
 
 	static char pSig[512];
-	auto sigLen = UTIL_StringToSignature2(pSignature, pSig, sizeof pSig);
+	auto sigLen = UTIL_StringToSignature(pSignature, pSig, sizeof pSig);
 
 	unsigned long moduleSize;
 	auto address = MemGetModuleAddress(pLibName, &moduleSize);
