@@ -11,10 +11,12 @@ using namespace GarrysMod::Lua;
 using namespace std;
 
 static lua_State* s_LuaState;
+static unsigned long* s_mListenerIDs = nullptr;
 
 DETOUR_DECLARE_A4( CServerRemoteAccess_CheckPassword, void, CRConServer*, pServerRA, ra_listener_id, listener, int, requestId, const char*, password);
 DETOUR_DECLARE_A4( CServerRemoteAccess_WriteDataRequest, void, CRConServer*, pServerRA, ra_listener_id, listener, const void*, buffer, int, bufferSize);
-DETOUR_DECLARE_A1( CServerRemoteAccess_IsPassword, bool, const char *, pPassword);
+DETOUR_DECLARE_A1( CServerRemoteAccess_IsPassword, bool, const char*, pPassword);
+DETOUR_DECLARE_A2( CServerRemoteAccess_LogCommand, void, ra_listener_id, listener, const char*, msg);
 
 DETOUR_DECLARE_MEMBER_A4(CServerRemoteAccess_WriteDataRequest, void, CRConServer*, pServerRA, ra_listener_id, listener, const void*, buffer, int, bufferSize) {
 	// check that the buffer contains at least the id and type
@@ -76,7 +78,7 @@ DETOUR_DECLARE_MEMBER_A4( CServerRemoteAccess_CheckPassword, void, CRConServer*,
 
 DETOUR_DECLARE_MEMBER_A1(CServerRemoteAccess_IsPassword, bool, const char*, pPassword) {
 	if (!_G::g_LastRconAddress) {
-		printf("[gmsv_rcon]  Skip hook '" GMSVRCON2_HOOK_CHECK_PASSWORD "': invalid pointer to g_LastRconAddress!\n");
+		printf("[gmsv_rcon] Skip hook '" GMSVRCON2_HOOK_CHECK_PASSWORD "': invalid pointer to g_LastRconAddress!\n");
 		return DETOUR_MEMBER_CALL(CServerRemoteAccess_IsPassword)(pPassword);
 	}
 
@@ -114,6 +116,58 @@ DETOUR_DECLARE_MEMBER_A1(CServerRemoteAccess_IsPassword, bool, const char*, pPas
 	return DETOUR_MEMBER_CALL(CServerRemoteAccess_IsPassword)(pPassword);
 }
 
+DETOUR_DECLARE_MEMBER_A2( CServerRemoteAccess_LogCommand, void, ra_listener_id, listener, const char*, msg) {
+	auto server = reinterpret_cast<CServerRemoteAccess *>(this);
+	auto m_ListenerIDs = reinterpret_cast<CUtlLinkedList<ListenerStore_t, int>*>(reinterpret_cast<unsigned char*>(server) + 0x2C);
+	if (!m_ListenerIDs){
+		printf("[gmsv_rcon] Skip hook '" GMSVRCON2_HOOK_LOG_COMMAND "': invalid pointer m_ListenerIDs!\n");
+		DETOUR_MEMBER_CALL(CServerRemoteAccess_LogCommand)(listener, msg);
+		return;
+	}
+
+	auto isKnownListener = listener >= 0 && listener < static_cast<ra_listener_id>(m_ListenerIDs->Count()) && (*m_ListenerIDs)[listener].m_bHasAddress; 
+	auto address = (*m_ListenerIDs)[listener].adr;
+
+	if (!address.IsValid()){
+		printf("[gmsv_rcon] Skip hook '" GMSVRCON2_HOOK_LOG_COMMAND "': got invalid address!\n");
+		DETOUR_MEMBER_CALL(CServerRemoteAccess_LogCommand)(listener, msg);
+		return;
+	}
+
+	auto isNil = true;
+	auto hookResult = true;
+	auto state = s_LuaState;
+
+	LUA->PushSpecial( SPECIAL_GLOB );
+		LUA->GetField(-1, "hook");
+		LUA->GetField(-1, "Call");
+		LUA->PushString(GMSVRCON2_HOOK_LOG_COMMAND); 
+		LUA->PushNil();
+		LUA->PushNumber(listener);
+		LUA->PushString(msg);
+		LUA->PushBool(isKnownListener);
+		if (!isKnownListener){
+			LUA->PushBool(false);
+			LUA->PushBool(false);
+			LUA->PushBool(false);
+		} else {
+			LUA->PushBool(address.IsReservedAdr());
+			LUA->PushString(address.ToString(true));
+			LUA->PushNumber(address.GetPort());
+		}
+		LUA->Call(8, 1);
+
+		if (LUA->GetType(-1) == Type::BOOL) {
+			isNil = false;
+			hookResult = LUA->GetBool(-1);
+		}
+	LUA->Pop(3);
+		
+	if (!isNil && !hookResult){
+		DETOUR_MEMBER_CALL(CServerRemoteAccess_LogCommand)(listener, msg);
+	}
+}
+
 bool DetourRconInit(lua_State* state) {
 	s_LuaState = state;
 
@@ -138,6 +192,13 @@ bool DetourRconInit(lua_State* state) {
 			"engine.dll"
 	);
 
+	DETOUR_CREATE_MEMBER(
+		CServerRemoteAccess_LogCommand,
+			"CServerRemoteAccess::LogCommand",
+			SIG_CSERVERREMOTEACCESS_LOGCOMMAND,
+			"engine.dll"
+	);
+
 	printf("[gmsv_rcon2] Rcon detoured!\n");
 	return true;
 }
@@ -146,5 +207,6 @@ bool DetourRconShutdown() {
 	DETOUR_DESTROY(CServerRemoteAccess_WriteDataRequest);
 	DETOUR_DESTROY(CServerRemoteAccess_CheckPassword);
 	DETOUR_DESTROY(CServerRemoteAccess_IsPassword);
+	DETOUR_DESTROY(CServerRemoteAccess_LogCommand);
 	return true;
 }
