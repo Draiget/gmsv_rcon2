@@ -1,3 +1,5 @@
 /Debug/*
+/Release/*
 /project.vcxproj.user
 /project.vcxproj.filters
+/.vs/*

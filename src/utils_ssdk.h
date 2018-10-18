@@ -53,7 +53,6 @@ struct ListenerStore_t
 };
 
 class CServerRemoteAccess;
-
 typedef int SocketHandle_t;
 
 struct ISocketCreatorListener

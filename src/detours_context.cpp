@@ -1,7 +1,6 @@
 #include "os_definions.h"
 #include "detours_context.h"
 #include "utils_asm.h"
-
 #include <cstdio>
 #include "utils_memory.h"
 #include "utils_sigscan.h"
@@ -88,14 +87,14 @@ void CDetourContext::Rewind(char* pOutbase, char* pOutptr) {
 	}
 
 	++pOutptr;
-	unsigned int call = pOutptr - pOutbase;
+	const unsigned int call = pOutptr - pOutbase;
 
 	if (pOutbase) {
 		*reinterpret_cast<int *>(pOutptr) = 0;
 	}
 
 	pOutptr += sizeof(int);
-	auto oldptr = pOutptr;
+	const auto oldptr = pOutptr;
 	pOutptr = pOutbase + call;
 
 	if (pOutbase) {
@@ -143,7 +142,7 @@ void CDetourContext::DisableDetour() {
 
 	MemProtectReadWriteTo(m_Detour_Address, 20);
 
-	auto addr = static_cast<unsigned char*>(m_Detour_Address);
+	const auto addr = static_cast<unsigned char*>(m_Detour_Address);
 	for (size_t i=0; i < m_Detour_Restore.bytes; i++) {
 		addr[i] = m_Detour_Restore.patch[i];
 	}

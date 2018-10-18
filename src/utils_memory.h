@@ -7,5 +7,6 @@ void MemProtectReadWriteTo(void* pTargetAddress, size_t dSize);
 void MemInsertJmp(void** pInjectAddressLoc, void** pToAddress);
 char* MemAlloc(unsigned uCodeSize);
 char* MemGetModuleAddress(const char* pLibName, unsigned long* uSize);
+void *MemFindSignatureInRunTime(const char *pSignature, const char *pDLL);
 
 #endif

@@ -48,18 +48,18 @@ int AsmCopyBytes(unsigned char *func, unsigned char *dest, int required_len)
 			bytecount++;
 		}
 
-		auto opcode = *func++;
+		const auto opcode = *func++;
 		if (dest) {
 			*dest++ = opcode;
 		}
 
 		bytecount++;
-		unsigned char modRM = 0xFF;
+		unsigned char modRm = 0xFF;
 
 		if (fpu) {
 			// ROL, ROR, RCL, RCR, SHL, SAL, SHR, SAR
 			if ((opcode & 0xC0) != 0xC0) {
-				modRM = opcode;
+				modRm = opcode;
 			}
 		} else if (!twoByte) {
 			if ((opcode & 0xC4) == 0x00 ||
@@ -72,10 +72,10 @@ int AsmCopyBytes(unsigned char *func, unsigned char *dest, int required_len)
 				(opcode & 0xFC) == 0xD0 ||
 				(opcode & 0xF6) == 0xF6)
 			{
-				modRM = *func++;
+				modRm = *func++;
 
 				if (dest) {
-					*dest++ = modRM;
+					*dest++ = modRm;
 				}
 
 				bytecount++;
@@ -93,24 +93,24 @@ int AsmCopyBytes(unsigned char *func, unsigned char *dest, int required_len)
 			{
 				// No mod R/M byte
 			} else {
-				modRM = *func++;
+				modRm = *func++;
 
 				if (dest) {
-					*dest++ = modRM;
+					*dest++ = modRm;
 				}
 
 				bytecount++;
 			}
 		}
 
-		if ((modRM & 0x07) == 0x04 &&
-			(modRM & 0xC0) != 0xC0)
+		if ((modRm & 0x07) == 0x04 &&
+			(modRm & 0xC0) != 0xC0)
 		{
 			AsmCopyOpCodeOrIterate(func, dest);
 			bytecount++;
 		}
 
-		if ((modRM & 0xC5) == 0x05) {
+		if ((modRm & 0xC5) == 0x05) {
 			if (dest) {
 				*reinterpret_cast<unsigned int *>(dest) = *reinterpret_cast<unsigned int *>(func);
 				dest += 4;
@@ -120,13 +120,13 @@ int AsmCopyBytes(unsigned char *func, unsigned char *dest, int required_len)
 			bytecount += 4;
 		}
 
-		if ((modRM & 0xC0) == 0x40) {
+		if ((modRm & 0xC0) == 0x40) {
 			AsmCopyOpCodeOrIterate(func, dest);
 
 			bytecount++;
 		}
 
-		if ((modRM & 0xC0) == 0x80) {
+		if ((modRm & 0xC0) == 0x80) {
 			if (dest) {
 				*reinterpret_cast<unsigned int *>(dest) = *reinterpret_cast<unsigned int *>(func);
 				dest += 4;
@@ -154,7 +154,7 @@ int AsmCopyBytes(unsigned char *func, unsigned char *dest, int required_len)
 				(opcode & 0xF8) == 0xE0 ||	// LOOP/JCXZ
 						 opcode == 0xEB ||
 						 opcode == 0xF6 &&
-				 (modRM & 0x30) == 0x00) // TEST
+				 (modRm & 0x30) == 0x00) // TEST
 			{
 				AsmCopyOpCodeOrIterate(func, dest);
 
@@ -178,7 +178,7 @@ int AsmCopyBytes(unsigned char *func, unsigned char *dest, int required_len)
 				(opcode & 0xEE) == 0xA8 ||
 						 opcode == 0xC7 ||
 						 opcode == 0xF7 &&
-				 (modRM & 0x30) == 0x00)
+				(modRm & 0x30) == 0x00)
 			{
 				if (dest) {
 					if ((opcode & 0xFE) == 0xE8) {
@@ -237,8 +237,8 @@ int AsmCopyBytes(unsigned char *func, unsigned char *dest, int required_len)
 
 void AsmInjectJmp(void *src, void *dest)
 {
-	auto csrc = static_cast<unsigned char *>(src);
-	auto cdest = static_cast<unsigned char *>(dest);
+	const auto csrc = static_cast<unsigned char *>(src);
+	const auto cdest = static_cast<unsigned char *>(dest);
 
 	*csrc = OP_JMP;
 	*reinterpret_cast<long *>(csrc + 1) = static_cast<long>(cdest - (csrc + OP_JMP_SIZE));
