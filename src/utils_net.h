@@ -3,6 +3,6 @@
 
 #include "utils_ssdk.h"
 
-netadr_s* ListenerIDToAddress(CServerRemoteAccess* server, ra_listener_id listener);
+netadr_s* ListenerIdToAddress(CServerRemoteAccess* server, ra_listener_id listener);
 
 #endif

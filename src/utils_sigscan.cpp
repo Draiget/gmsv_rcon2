@@ -1,18 +1,18 @@
 #include "utils_sigscan.h"
-#include <stdio.h>
+#include <cstdio>
 #include <cstring>
 #include "utils_memory.h"
 
 unsigned int UTIL_StringToSignature(const char *str, char buffer[], size_t maxlength) {
-	unsigned int real_bytes = 0;
-	auto length = strlen(str);
+	unsigned int realBytes = 0;
+	const auto length = strlen(str);
 
 	for (unsigned int i = 0; i < length; i++) {
-		if (real_bytes >= maxlength) {
+		if (realBytes >= maxlength) {
 			break;
 		}
 
-		buffer[real_bytes++] = static_cast<unsigned char>(str[i]);
+		buffer[realBytes++] = static_cast<unsigned char>(str[i]);
 
 		if (str[i] == '\\' && str[i + 1] == 'x') {
 			if (i + 3 >= length) {
@@ -28,13 +28,13 @@ unsigned int UTIL_StringToSignature(const char *str, char buffer[], size_t maxle
 
 			sscanf_s(s_byte, "%x", &r_byte);
 
-			buffer[real_bytes - 1] = static_cast<unsigned char>(r_byte);
+			buffer[realBytes - 1] = static_cast<unsigned char>(r_byte);
 
 			i += 3;
 		}
 	}
 
-	return real_bytes;
+	return realBytes;
 }
 
 void* UTIL_RuntimeSigScan(const char* pSignature, const char* pLibName) {
@@ -43,16 +43,16 @@ void* UTIL_RuntimeSigScan(const char* pSignature, const char* pLibName) {
 	}
 
 	static char pSig[512];
-	auto sigLen = UTIL_StringToSignature(pSignature, pSig, sizeof pSig);
+	const auto sigLen = UTIL_StringToSignature(pSignature, pSig, sizeof pSig);
 
 	unsigned long moduleSize;
-	auto address = MemGetModuleAddress(pLibName, &moduleSize);
+	const auto address = MemGetModuleAddress(pLibName, &moduleSize);
 	if (address == nullptr){
 		return nullptr;
 	}
 
 	auto ptr = reinterpret_cast<char *>(address);
-	auto end = ptr + moduleSize - 1;
+	const auto end = ptr + moduleSize - 1;
 	char *retn = nullptr;
 
 	while (ptr < end) {
