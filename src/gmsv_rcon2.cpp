@@ -12,7 +12,6 @@ using namespace GarrysMod::Lua;
 
 GMOD_MODULE_OPEN() {
 	printf("[gmsv_rcon2] Initializing ...");
-	Log("[gmsv_rcon2] Initializing ...\n");
 	ConVar_Register();
 
 	auto tierLib = VStdLib_GetICVarFactory();
@@ -42,7 +41,7 @@ GMOD_MODULE_OPEN() {
 		LUA->SetField( -2, "SERVERDATA_SEND_CONSOLE_LOG" );
 	LUA->Pop();
 
-	Log("[gmsv_rcon2] Loading done");
+	printf("[gmsv_rcon2] Loading done");
 	return EXIT_SUCCESS;
 }
 
