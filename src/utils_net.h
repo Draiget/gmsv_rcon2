@@ -1,8 +1,5 @@
-#ifndef ZONTWELG_GMSVRCON2_UTILS_NET_H
-#define ZONTWELG_GMSVRCON2_UTILS_NET_H
-
+#pragma once
 #include "utils_ssdk.h"
 
-netadr_s* ListenerIdToAddress(CServerRemoteAccess* server, ra_listener_id listener);
-
-#endif
+netadr_s* listener_id_to_address(CServerRemoteAccess* server, ra_listener_id listener);
+ListenerStore_t* listener_from_address(CServerRemoteAccess* server, const ra_listener_id listener);

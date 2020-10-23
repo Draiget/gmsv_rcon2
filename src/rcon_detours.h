@@ -1,13 +1,11 @@
-#ifndef ZONTWELG_GMSVRCON2_DETOURS_H
-#define ZONTWELG_GMSVRCON2_DETOURS_H
-
+#pragma once
 #include <Lua/Interface.h>
 
+// ReSharper disable IdentifierTypo
 #define GMSVRCON2_HOOK_CHECK_PASSWORD	"OnRconCheckPassword"
 #define GMSVRCON2_HOOK_WRITE_REQUEST	"OnRconWriteRequest"
 #define GMSVRCON2_HOOK_LOG_COMMAND		"OnRconLogCommand"
+// ReSharper restore IdentifierTypo
 
-bool DetourRconInit(lua_State* state);
-bool DetourRconShutdown();
-
-#endif
+bool detour_rcon_init(lua_State* state);
+bool detour_rcon_shutdown();

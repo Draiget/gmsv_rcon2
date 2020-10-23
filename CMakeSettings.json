@@ -1,0 +1,158 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x86-debug-win",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "buildRoot": "${projectDir}\\..\\output\\${name}",
+      "installRoot": "${projectDir}\\..\\output\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "GMSV_PLATFORM",
+          "value": "WINDOWS",
+          "type": "STRING"
+        },
+        {
+          "name": "GMSV_SSDK_PATH",
+          "value": "B:\\libs\\ssdk2013",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "GMSV_TARGET_PATH",
+          "value": "S:\\game\\gmod_dev\\garrysmod\\lua\\bin",
+          "type": "FILEPATH"
+        }
+      ]
+    },
+    {
+      "name": "x86-release-win",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "buildRoot": "${projectDir}\\..\\output\\${name}",
+      "installRoot": "${projectDir}\\..\\output\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "GMSV_PLATFORM",
+          "value": "WINDOWS",
+          "type": "STRING"
+        },
+        {
+          "name": "GMSV_SSDK_PATH",
+          "value": "B:\\libs\\ssdk2013",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "GMSV_TARGET_PATH",
+          "value": "S:\\game\\gmod_dev\\garrysmod\\lua\\bin",
+          "type": "FILEPATH"
+        }
+      ]
+    },
+    {
+      "name": "x86-debug-linux",
+      "generator": "Unix Makefiles",
+      "remoteMachineName": "${defaultRemoteMachineName}",
+      "configurationType": "Debug",
+      "remoteCMakeListsRoot": "$HOME/.vs/${projectDirName}/${workspaceHash}/src",
+      "cmakeExecutable": "cmake",
+      "remoteBuildRoot": "$HOME/.vs/${projectDirName}/${workspaceHash}/out/build/${name}",
+      "remoteInstallRoot": "$HOME/.vs/${projectDirName}/${workspaceHash}/out/install/${name}",
+      "remoteCopySources": true,
+      "remoteCopySourcesOutputVerbosity": "Normal",
+      "remoteCopySourcesConcurrentCopies": "10",
+      "remoteCopySourcesMethod": "rsync",
+      "remoteCopySourcesExclusionList": [ ".vs", ".git", "out" ],
+      "rsyncCommandArgs": "-t --delete --delete-excluded",
+      "remoteCopyBuildOutput": false,
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "linux_x86" ],
+      "addressSanitizerRuntimeFlags": "detect_leaks=0",
+      "variables": [
+        {
+          "name": "GMSV_PLATFORM",
+          "value": "LINUX",
+          "type": "STRING"
+        },
+        {
+          "name": "GMSV_TARGET",
+          "value": "Debug",
+          "type": "STRING"
+        },
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "/usr/bin/g++",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "GMSV_SSDK_PATH",
+          "value": "/usr/lib/ssdk-2013",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "GMSV_TARGET_PATH",
+          "value": "/game/gmod_test/garrysmod/lua/bin",
+          "type": "FILEPATH"
+        }
+      ]
+    },
+    {
+      "name": "x86-release-linux",
+      "generator": "Unix Makefiles",
+      "remoteMachineName": "${defaultRemoteMachineName}",
+      "configurationType": "Release",
+      "remoteCMakeListsRoot": "$HOME/.vs/${projectDirName}/${workspaceHash}/src",
+      "cmakeExecutable": "cmake",
+      "remoteBuildRoot": "$HOME/.vs/${projectDirName}/${workspaceHash}/out/build/${name}",
+      "remoteInstallRoot": "$HOME/.vs/${projectDirName}/${workspaceHash}/out/install/${name}",
+      "remoteCopySources": true,
+      "remoteCopySourcesOutputVerbosity": "Normal",
+      "remoteCopySourcesConcurrentCopies": "10",
+      "remoteCopySourcesMethod": "rsync",
+      "remoteCopySourcesExclusionList": [ ".vs", ".git", "out" ],
+      "rsyncCommandArgs": "-t --delete --delete-excluded",
+      "remoteCopyBuildOutput": false,
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "linux_x86" ],
+      "addressSanitizerRuntimeFlags": "detect_leaks=0",
+      "variables": [
+        {
+          "name": "GMSV_PLATFORM",
+          "value": "LINUX",
+          "type": "STRING"
+        },
+        {
+          "name": "GMSV_TARGET",
+          "value": "Release",
+          "type": "STRING"
+        },
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "/usr/bin/g++",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "GMSV_SSDK_PATH",
+          "value": "/usr/lib/ssdk-2013",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "GMSV_TARGET_PATH",
+          "value": "/game/gmod_test/garrysmod/lua/bin",
+          "type": "FILEPATH"
+        }
+      ]
+    }
+  ]
+}
