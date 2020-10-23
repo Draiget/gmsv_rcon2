@@ -1,15 +1,18 @@
-#ifndef ZONTWELG_GMSVRCON2_SHARED_H
-#define ZONTWELG_GMSVRCON2_SHARED_H
+#pragma once
 
-// Forward declarations of SSDK stuff
+/*
+ * Forward declarations of SSDK stuff
+ */
+
 typedef struct netadr_s netadr_t;
 typedef unsigned int ra_listener_id;
 
-class _G
+namespace zontwelg 
 {
-public:
-	static netadr_s* g_LastRconAddress;
-	static ra_listener_id g_LastListenerId;
-};
-
-#endif
+	class shared
+	{
+	public:
+		static netadr_s* g_LastRconAddress;
+		static ra_listener_id g_LastListenerId;
+	};
+}

@@ -26,6 +26,7 @@ hook.Add("OnRconCheckPassword", "RCON_IsPassword", function( password, listenerI
 	-- Any error in rcon hooks will cause "Lua Panic" error and server crash
 	-- This is simple try\catch style call
 	local state, msgOrArgs = pcall( function()
+
 		local passRef = RconAllowList[ ip ]
 		if ( !passRef ) then
 			-- Return nil to pass check onto engine
@@ -62,6 +63,7 @@ hook.Add("OnRconWriteRequest", "RCON_WriteRequest", function( listenerId, reques
 	-- Any error in rcon hooks will cause "Lua Panic" error and server crash
 	-- This is simple try\catch style call
 	local state, msgOrArgs = pcall( function()
+
 		local passRef = RconAllowList[ ip ]
 
 		if ( !passRef ) then
@@ -102,6 +104,10 @@ hook.Add("OnRconWriteRequest", "RCON_WriteRequest", function( listenerId, reques
 	return msgOrArgs
 end)
 
+--
+-- NOTE: LogCommand works only on Linux platform,
+-- for Windows server please consider use OnRconWriteRequest
+--
 hook.Add("OnRconLogCommand", "RCON_LogCommand", function( listenerId, msg, isKnownListener, isLan, ip, port )
 	-- Any error in rcon hooks will cause "Lua Panic" error and server crash
 	-- This is simple try\catch style call

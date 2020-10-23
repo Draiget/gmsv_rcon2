@@ -1,37 +1,39 @@
-#ifndef ZONTWELG_GMSVRCON2_UTILS_SSDK_H
-#define ZONTWELG_GMSVRCON2_UTILS_SSDK_H
+#pragma once
+
+// Hide all bullshit regarding code we can't change
+// ReSharper disable CppInconsistentNaming
+// ReSharper disable CppPolymorphicClassWithNonVirtualPublicDestructor
+// ReSharper disable IdentifierTypo
+#include "platform.h"
+#ifndef NO_MALLOC_OVERRIDE
+#define NO_MALLOC_OVERRIDE
+#endif
+
+#ifdef _PLATFORM_LINUX
+#pragma GCC diagnostic push 
+#endif
+#pragma warning(push, 0)
 
 #include <datamap.h>
 #include <const.h>
 #include <tier1.h>
 #include <tier2.h>
 #include <tier3.h>
-#include <tier1/checksum_crc.h>
-#include <eiface.h>
-#include <igameevents.h>
 #include <iclient.h>
 #include <netadr.h>
-#include <inetmessage.h>
-#include <inetchannel.h>
-#include <igameevents.h>
-#include <iachievementmgr.h>
-#include <game/server/iplayerinfo.h>
-#include <vphysics_interface.h>
-#include <vphysics/vehicles.h>
-#include <utllinkedlist.h>
-#include <server_class.h>
-#include <performance.h>
 #include <vstdlib/cvar.h>
+#include <utllinkedlist.h>
 #include <utlbuffer.h>
-#include <steam/steam_gameserver.h>
+#include <Lua/Interface.h>
+#include <memalloc.h>
 
-//------------------------------------------------------------------------
-// Forward declarations
-//------------------------------------------------------------------------
+/*
+* Forward declarations
+*/
+
 typedef unsigned int ra_listener_id;
 const ra_listener_id INVALID_LISTENER_ID = 0xffffffff;
 
-// enumerations for writing out the requests
 enum ServerDataRequestType_t
 {
 	SERVERDATA_REQUESTVALUE,
@@ -44,7 +46,7 @@ enum ServerDataRequestType_t
 	SERVERDATA_SEND_CONSOLE_LOG,
 };
 
-struct ListenerStore_t
+struct ListenerStore_t  // NOLINT
 {
 	ra_listener_id	listenerID;
 	bool			authenticated;
@@ -60,14 +62,21 @@ struct ISocketCreatorListener
 public:
 	// Methods to allow other classes to allocate data associated w/ sockets
 	// Return false to disallow socket acceptance
-	virtual bool ShouldAcceptSocket( SocketHandle_t hSocket, const netadr_t &netAdr ) = 0; 
-	virtual void OnSocketAccepted( SocketHandle_t hSocket, const netadr_t &netAdr, void** ppData ) = 0; 
-	virtual void OnSocketClosed( SocketHandle_t hSocket, const netadr_t &netAdr, void* pData ) = 0;
+	virtual bool ShouldAcceptSocket(SocketHandle_t hSocket, const netadr_t& netAdr) = 0;
+	virtual void OnSocketAccepted(SocketHandle_t hSocket, const netadr_t& netAdr, void** ppData) = 0;
+	virtual void OnSocketClosed(SocketHandle_t hSocket, const netadr_t& netAdr, void* pData) = 0;
 };
 
 class CRConServer : public ISocketCreatorListener
 {
-	
+
 };
 
+#pragma warning(pop)
+#ifdef _PLATFORM_LINUX
+#pragma GCC diagnostic pop
 #endif
+
+// ReSharper enable CppInconsistentNaming
+// ReSharper restore CppPolymorphicClassWithNonVirtualPublicDestructor
+// ReSharper restore IdentifierTypo
